@@ -96,7 +96,6 @@ export default class UserSignIn extends Component {
 
   finishSubmit = (response) => {
     
-    const { from } = this.props.location.state || { from: { pathname: '/courses' } };
     const { username, password } = this.state;
     const { context } = this.props;    
       
@@ -105,7 +104,7 @@ export default class UserSignIn extends Component {
     });
 
     context.actions.finalizeSignIn({...response, password: password });
-    this.props.history.push(from);        
+    this.props.history.goBack();    
       
   }
 
