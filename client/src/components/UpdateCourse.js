@@ -11,7 +11,6 @@ export default class UpdateCourse extends Component {
     description: '',
     materialsNeeded: '',
     estimatedTime: '',
-    isAuthenticated: false,
     errors: []
   }
 
@@ -55,7 +54,6 @@ export default class UpdateCourse extends Component {
               description: details.description,
               materialsNeeded: details.materialsNeeded,
               estimatedTime: details.estimatedTime,
-              isAuthenticated: authenticated,
               errors: []
             }
           )
@@ -117,7 +115,6 @@ export default class UpdateCourse extends Component {
             description: '',
             materialsNeeded: '',
             estimatedTime: '',
-            isAuthenticated: false,
             errors: []
         };
       });
