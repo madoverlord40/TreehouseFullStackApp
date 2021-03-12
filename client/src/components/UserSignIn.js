@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Form from './Form';
 
-
+//Component class UserSignIn
+//Handles rendering the user sign in page
 export default class UserSignIn extends Component {
   state = {
     username: '',
@@ -12,9 +13,10 @@ export default class UserSignIn extends Component {
     errors: [],
   }
 
+  //if we are done showing the page and we are authenticated, redirect to the default route
   componentWillMount() {
     if(this.state.isAuthenticated) {
-      this.props.history.push('/index');
+      this.props.history.push('/');
     }
   }
 
@@ -61,6 +63,7 @@ export default class UserSignIn extends Component {
     );
   }
 
+  //Function for updating the state values from the form
   change = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -72,28 +75,38 @@ export default class UserSignIn extends Component {
     });
   }
 
+  //function to handle errors, passed down to the context when making api calls
+  //@Param error: the error information returned from Axios
   handleError = (error) => {
+    //if this is an axios error, then check the status of the error and handle
     if(error.isAxiosError) {
-      if(error.response) {
+      //sometimes the response has no information so lets make sure its valid
+      if(typeof(error.response) !== 'undefined') {
+        //401 means invalid login info
         if(error.response.status === 401) {
           this.setState(() => {
             return { errors: [ 'Invalid username or password.' ], username:'' , password: '', isAuthenticated: false };
           });
-        } else {
+          //if not an auth error but in the 400 domain, show the error
+        } else if (error.response.status >= 400 && error.response.status < 500) {
           this.setState(() => {
             return { errors: error.response.data.errors, username:'' , password: '', isAuthenticated: false };
           });
         }
       }
+      //for any other error push the error page, might be 500
       else {
         this.props.history.push('/error');
       }
     }
+    //for any other error push the error page, might be 500
     else {
       this.props.history.push('/error');
     }
   }
 
+  //function to handle the post submit, after axios calls to the api
+  //passed down to the context and called when axios completes successfully
   finishSubmit = (response) => {
     
     const { username, password } = this.state;
@@ -103,7 +116,10 @@ export default class UserSignIn extends Component {
       return { errors: [ ], username:username , password: password, isAuthenticated: true};
     });
 
+    //update the context so we store the login globally
     context.actions.finalizeSignIn({...response, password: password });
+
+    //if we have a redirect, then use it after the signin, otherwise, go back to last page when auth is completed
     if(this.props.context.redirect !== null) {
       this.props.history.push(this.props.context.redirect)
       context.actions.setRedirect(null);
@@ -113,12 +129,14 @@ export default class UserSignIn extends Component {
       
   }
 
+  //function to handle form submit
   submit = async ()=> {
     const { context } = this.props;
     const { username, password } = this.state;
 
     let errors = []
 
+    //make sure the username and password fields are not blank
     if(username === null || typeof(username) == 'undefined' || username === '') {
       errors.push('*Username cannot be blank')
     }
@@ -136,6 +154,7 @@ export default class UserSignIn extends Component {
     
   } 
 
+  //cancel form button, redirect to default route.
   cancel = () => {
     this.props.history.push('/');
   }

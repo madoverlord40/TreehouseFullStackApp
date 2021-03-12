@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Form from './Form';
 
+//UpdateCourse Component displayed with context in the router
 export default class UpdateCourse extends Component {
 
+  //stateful component, store the values of the form in the state, including errors
   state = {
     userName: '',
     title: '',
@@ -13,58 +15,60 @@ export default class UpdateCourse extends Component {
     errors: []
   }
 
+  //once the component has mounted, lets check to see if we are authenticated
   componentDidMount() {
-    //get courses from server...
+    //get the context
     const { context } = this.props;
 
+    //make sure its defined, sometimes it has been undefined here
     if(typeof(context) !== 'undefined') { 
+        //are we authenticated? if so get the course info by id and populate the state
         if(context.authenticatedUser !== null) {
           context.actions.getUserCourseById(this.props.match.params.id, this.updateCourseDetails, this.handleError);
+        } else {
+          //we are not authenticated we cannot make any changes
+          this.props.history.push('/forbidden');
+        }
+    }
+    else {
+      this.props.history.push('/error')
+    }
+  }
+
+  //function callback for calling down to the context actions and fetching course data, once the data has been fetched, come in here and display
+  updateCourseDetails = (response) => {
+
+    const { context } = this.props;
+
+    //once in a while response was undefined, to trap that error here just in case
+    if(response !== 'undefined') {
+        //lets make sure we are not trying to update data that does not belong to us, if not show forbidden page
+        if(context.authenticatedUser.userId === response.userId) {
+          let name = response.user.firstName + '  ' + response.user.lastName;
+
+          const details = response;
+
+          this.setState(
+            {
+              userName: name,
+              title: details.title,
+              description: details.description,
+              materialsNeeded: details.materialsNeeded,
+              estimatedTime: details.estimatedTime,
+              isAuthenticated: authenticated,
+              errors: []
+            }
+          )
         } else {
           this.props.history.push('/forbidden');
         }
     }
     else {
-      this.props.errors = ['property context is not valid!']
-      this.props.history.push('/error')
+      this.props.history.push('/error');
     }
   }
 
-  updateCourseDetails = (response) => {
-   //get courses from server...
-   const { context } = this.props;
-
-    if(response !== 'undefined') {
-      const authenticated = (context.authenticatedUser !== null && typeof(context.authenticatedUser) !== 'undefined');
-        if(authenticated) {
-
-            if(context.authenticatedUser.userId === response.userId) {
-              let name = response.user.firstName + '  ' + response.user.lastName;
-
-              const details = response;
-
-              this.setState({
-                  userName: name,
-                  title: details.title,
-                  description: details.description,
-                  materialsNeeded: details.materialsNeeded,
-                  estimatedTime: details.estimatedTime,
-                  isAuthenticated: authenticated,
-                  errors: []
-              })
-            } else {
-              this.props.history.push('/forbidden');
-            }
-        }
-        else {
-          this.props.history.push('/forbidden');
-        }
-    } else {
-      this.props.errors = ['property response is not valid!']
-      this.props.history.push('/error')
-    }
-  }
-
+  //function for dynamic DOM to populate the list for course materials
   renderMaterialsList = () => {
     let list = [];
     this.state.course_materials.forEach((element, index) => {
@@ -80,32 +84,31 @@ export default class UpdateCourse extends Component {
     )
   }
 
+  //handle any errors that happened when fetching the course data with axios
   handleError = (error) => {
     if(error.isAxiosError) {
       if(typeof(error.response) !== 'undefined') {
-        if(error.response.status > 399) {
+        //if the error is within the 400 domain, set the state errors
+        if(error.response.status > 399 && error.response.status < 500) {
           this.setState(() => {
             return { errors: [ error.response.data.errors ] };
           });
-        } else {
-          this.setState(() => {
-            return { errors: [ 'Create Course was unsuccessful', error.response.data.message ] };
-          });
+        }  else if (error.response.status >= 500) {
+          this.props.history.push('/error');
         }
       }
       else {
-        this.props.errors = [error.response.error]
         this.props.history.push('/error');
       }
     }
     else {
-      this.props.errors = [error.response.error]
       this.props.history.push('/error');
     }
   }
 
+  //function called post axios which is done when axios completes successfully.
   finishSubmit = (response) => {
-    
+    //reset the form data
     this.setState(() => 
       {
         return { 
@@ -118,16 +121,18 @@ export default class UpdateCourse extends Component {
             errors: []
         };
       });
-      const { from } = this.props.location.state || { from: {pathname: `/courses/${this.props.match.params.id}`}  };
-      this.props.history.push(from);
+      
+      //take us back to the course details page for the course we just updated
+      this.props.history.push(`/courses/${this.props.match.params.id}`);
   }
 
+  //function to handle the form submit, calls update course in the context and passes handing functions
   handleSubmit = async (event) => {
 
     const { context } = this.props;
     const id = this.props.match.params.id;    
         
-    let data = {
+    const data = {
       "title": this.state.title,
       "description": this.state.description,
       "estimatedTime": this.state.estimatedTime,
@@ -138,11 +143,12 @@ export default class UpdateCourse extends Component {
     
   }
   
-
+  //cancle button click, return to the course detail page
   handleCancleClick = (event) => {
     this.props.history.push(`/courses/${this.props.match.params.id}`);
   }
 
+  //on change event from the DOM when modifying the form fields.
   change = (event) => {
     const name = event.target.name;
     const value = event.target.value;

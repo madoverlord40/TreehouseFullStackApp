@@ -10,14 +10,17 @@ export default class CourseDetails extends Component {
     course_description: '',
     course_materials: [],
     course_estimated_time: '',
+    //is there a user authenticated?
     isAuthenticated: false,
+    //the owners name, so if we dont own the course, we can display who owns it in the details
+    ownerName: '',
+    //does the user own this course and therefore is authorized to make changes?
     isAuthorized: false,
-    courseOwner: '',
     errors: []
   }
 
   componentDidMount() {
-    //get courses from server...
+    
     const { context } = this.props;
 
     if(typeof(context) !== 'undefined') { 
@@ -51,21 +54,22 @@ export default class CourseDetails extends Component {
 
 
   updateCourseDetails = (response) => {
-   //get courses from server...
+
    const { context } = this.props;
    const authenticatedUser = context.authenticatedUser;
    
     if(response !== 'undefined') {
-        
+      //are we authenticated
       const authenticated = (authenticatedUser !== null && typeof(authenticatedUser) !== 'undefined');         
-      
+      //just because we are authenticated doesnt mean we can make changes
       const authorized = authenticated ?  (authenticatedUser.userId === response.userId) : false;
-
-      let name = response.user.firstName + '  ' + response.user.lastName;
+      //construct the owner name of this course
+      const ownerName = response.user.firstName + '  ' + response.user.lastName;
 
       const details = response;
       let materials = [];      
 
+      //we need to split the string up into an array so we can display the materials needed as a list isntead of a long string
       if(details.materialsNeeded !== null ) {
         materials = details.materialsNeeded.split('\n');
         if(materials[materials.length -1] === '') {
@@ -75,23 +79,23 @@ export default class CourseDetails extends Component {
         materials.push('');
       }
 
+      //populate the state so we can update the DOM
       this.setState({
-        userName: name,
         course_title: details.title,
         course_description: details.description,
         course_materials: materials,
         course_time: details.estimatedTime,
         isAuthenticated: authenticated,
         isAuthorized: authorized,
-        courseOwner: name,
+        ownerName: ownerName,
         errors: []
       })
     } else {
-        this.props.errors = ['property response is not valid!']
         this.props.history.push('/error')
     }
   }
 
+  //Dynamic DOM for rendering the course details with markdown
   renderMaterialsList() {
     let list = [];
     this.state.course_materials.forEach((element, index) => {
@@ -103,24 +107,24 @@ export default class CourseDetails extends Component {
     )
   }
 
-  finishSubmit = (response) => {
-    const { from } = this.props.location.state || { from: { pathname: '/courses' } };    
+  //function to handle form submit, reset the state and move to the courses default route
+  finishSubmit = () => {
           
     this.setState(() => 
     {
       return { 
-          userName: '',
           course_title: '',
           course_description: '',
           course_materials: [],
           course_estimated_time: '',
           isAuthenticated: false,
           isAuthorized: false,
+          ownerName: '',
           errors: []
       };
     });
 
-    this.props.history.push(from);
+    this.props.history.push('/courses');
   }
 
   handleUpdateCourseClick = (event) => {
@@ -129,7 +133,6 @@ export default class CourseDetails extends Component {
   }
 
   handleDeleteCourseClick = (event) => {
-    //get courses from server...
     const { context } = this.props;
 
     if(typeof(context) !== 'undefined') { 
@@ -137,6 +140,8 @@ export default class CourseDetails extends Component {
     }
   }
 
+  //dynamic DOM rendering of the update and dlete course buttons
+  //we can only see them if we are authenticated
   renderUpdateCourseButton() {
     if(this.state.isAuthenticated && this.state.isAuthorized) {
       return (
@@ -170,7 +175,7 @@ export default class CourseDetails extends Component {
                   <div className="course--header">
                     <h4 className="course--label">Course</h4>
                     <h3 className="course--title">{this.state.course_title}</h3>
-                    <p>By {this.state.courseOwner}</p>
+                    <p>By {this.state.ownerName}</p>
                   </div>
                   <div className="course--description">
                     <ReactMarkdown plugins={[[gfm, {singleTilde: false}]]}>
