@@ -7,7 +7,7 @@ export default class Courses extends Component {
 
   componentDidMount() {
     this.htmlInsert = [];
-    //get courses from server...
+    
     const { context } = this.props;
 
     context.actions.getCourses(this.updateCourses, this.handleError);
@@ -52,19 +52,16 @@ export default class Courses extends Component {
     }
   }
 
-  renderCreateButton() {
-    //get courses from server...
+  handleCreateCourseClick = (event) => {
     const { context } = this.props;
-    if(context.authenticatedUser !== null && typeof(context.authenticatedUser) !== 'undefined') {
-      return (<div className="grid-33"><a className="course--module course--add--module" href="/courses/create">
-                <h3 className="course--add--title"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 13 13" className="add">
-                    <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 " />
-                  </svg>New Course</h3>
-              </a></div>
-      )}
 
-    return (<></>)
-}
+    if(context.authenticatedUser !== null) {
+      this.props.history.push('/courses/create');
+    } else {
+      context.actions.setRedirect('/courses/create');
+      this.props.history.push('/signin');
+    }
+  }
 
   render() {
     return (
@@ -73,7 +70,11 @@ export default class Courses extends Component {
         <hr />
         <div className="bounds">
           {this.htmlInsert}
-          {this.renderCreateButton()}
+          <div className="grid-33"><a className="course--module course--add--module" onClick={this.handleCreateCourseClick}>
+                <h3 className="course--add--title"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 13 13" className="add">
+                    <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 " />
+                  </svg>New Course</h3>
+              </a></div>
         </div>
       </div>        
     );

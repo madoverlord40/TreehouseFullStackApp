@@ -104,7 +104,12 @@ export default class UserSignIn extends Component {
     });
 
     context.actions.finalizeSignIn({...response, password: password });
-    this.props.history.goBack();    
+    if(this.props.context.redirect !== null) {
+      this.props.history.push(this.props.context.redirect)
+      context.actions.setRedirect(null);
+    } else {
+      this.props.history.goBack();    
+    }
       
   }
 

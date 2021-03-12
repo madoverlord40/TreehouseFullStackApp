@@ -25,13 +25,15 @@ export class Provider extends Component {
 
   state = {
     
-    authenticatedUser: cookies.get('authenticatedUser') || null
+    authenticatedUser: cookies.get('authenticatedUser') || null,
+    redirect: null
   };
 
   render() {
     const { authenticatedUser } = this.state;
     const value = {
       authenticatedUser,
+      redirect: this.state.redirect,
       actions: {
         signIn: this.signIn,
         signOut: this.signOut,
@@ -42,7 +44,8 @@ export class Provider extends Component {
         getUserCourseById: this.getCourseById,
         getCourses: this.getCourses,
         deleteCourseById: this.deleteCourseById,
-        updateCourse: this.updateCourse
+        updateCourse: this.updateCourse,
+        setRedirect: this.setRedirect
       },
     };
     return (
@@ -50,6 +53,14 @@ export class Provider extends Component {
         {this.props.children}
       </Context.Provider>  
     );
+  }
+
+  setRedirect = (redirect) => {
+    this.setState(() => {
+      return {
+        redirect: redirect
+      }
+    })
   }
 
   finalizeSignIn = (user) => {
