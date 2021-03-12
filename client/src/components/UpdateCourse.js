@@ -85,6 +85,10 @@ export default class UpdateCourse extends Component {
       if(typeof(error.response) !== 'undefined') {
         if(error.response.status > 399) {
           this.setState(() => {
+            return { errors: [ error.response.data.errors ] };
+          });
+        } else {
+          this.setState(() => {
             return { errors: [ 'Create Course was unsuccessful', error.response.data.message ] };
           });
         }
@@ -130,7 +134,7 @@ export default class UpdateCourse extends Component {
       "materialsNeeded": this.state.materialsNeeded
     }
 
-    context.actions.updateCourse(id, data, this.finishSubmit);
+    context.actions.updateCourse(id, data, this.finishSubmit, this.handleError);
     
   }
   
@@ -169,11 +173,11 @@ export default class UpdateCourse extends Component {
                     <div className="grid-66">
                         <div className="course--header">
                             <h4 className="course--label">Course</h4>
-                            <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..." defaultValue={this.state.title} onChange={this.change}/></div>
+                            <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..." defaultValue={this.state.title} onChange={this.change} onBlur={this.change}/></div>
                             <p>By {this.state.userName}</p>
                         </div>
                         <div className="course--description">
-                            <div><textarea id="description" name="description" className placeholder="Course description..." defaultValue={this.state.description} onChange={this.change}/></div>
+                            <div><textarea id="description" name="description" className placeholder="Course description..." defaultValue={this.state.description} onChange={this.change} onBlur={this.change}/></div>
                         </div>
                         </div>
                         <div className="grid-25 grid-right">
@@ -181,11 +185,11 @@ export default class UpdateCourse extends Component {
                               <ul className="course--stats--list">
                               <li className="course--stats--list--item">
                                   <h4>Estimated Time</h4>
-                                  <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input" placeholder="Hours" defaultValue={this.state.estimatedTime} onChange={this.change}/></div>
+                                  <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input" placeholder="Hours" defaultValue={this.state.estimatedTime} onChange={this.change} onBlur={this.change}/></div>
                               </li>
                               <li className="course--stats--list--item">
                                   <h4>Materials Needed</h4>
-                                  <div><textarea id="materialsNeeded" name="materialsNeeded" className placeholder="List materials..." defaultValue={this.state.materialsNeeded} onChange={this.change}/></div>
+                                  <div><textarea id="materialsNeeded" name="materialsNeeded" className placeholder="List materials..." defaultValue={this.state.materialsNeeded} onChange={this.change} onBlur={this.change}/></div>
                               </li>
                               </ul>
                           </div>                                
