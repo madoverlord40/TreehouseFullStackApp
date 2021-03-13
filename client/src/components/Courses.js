@@ -20,14 +20,14 @@ export default class Courses extends Component {
     //make sure the response is valid
     if(response !== null && typeof(response) !=='undefined') {
       //loop the response which should contain a list from the database
-      response.forEach((element) => {
+      response.forEach((element, index) => {
         const path = `/courses/${element.id}`;
         this.htmlInsert.push(        
-              <div className="grid-33"><a className="course--module course--link" href={path} >
+              <div key={index} className="grid-33"><a className="course--module course--link" href={path} >
                   <h4 className="course--label">Course</h4>
                   <h3 className="course--title">{element.title}</h3>
                 </a></div>
-          );      
+          );
       });
       this.setState({});
     }

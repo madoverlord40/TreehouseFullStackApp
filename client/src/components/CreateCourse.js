@@ -111,11 +111,11 @@ export default class CreateCourse extends Component {
                           <div className="grid-66">
                             <div className="course--header">
                               <h4 className="course--label">Course</h4>
-                              <div><input id="title" name="courseTitle" type="text" className="input-title course--title--input" placeholder="Course title..." defaultValue value={courseTitle} onChange={this.change} onBlur={this.change} /></div>
+                              <div><input id="title" name="courseTitle" type="text" className="input-title course--title--input" placeholder="Course title..." defaultValue={courseTitle} onChange={this.change} onBlur={this.change} /></div>
                               <p>By {user}</p>
                             </div>
                             <div className="course--description">
-                              <div><textarea id="description" name="courseDescription" className placeholder="Course description..." defaultValue={""} value={courseDescription} onChange={this.change} onBlur={this.change} /></div>
+                              <div><textarea id="description" name="courseDescription" placeholder="Course description..." defaultValue={courseDescription} onChange={this.change} onBlur={this.change} /></div>
                             </div>
                           </div>
                           <div className="grid-25 grid-right">
@@ -123,11 +123,11 @@ export default class CreateCourse extends Component {
                               <ul className="course--stats--list">
                                 <li className="course--stats--list--item">
                                   <h4>Estimated Time</h4>
-                                  <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input" placeholder="Hours" defaultValue value={estimatedTime} onChange={this.change} onBlur={this.change}/></div>
+                                  <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input" placeholder="Hours" defaultValue={estimatedTime} onChange={this.change} onBlur={this.change}/></div>
                                 </li>
                                 <li className="course--stats--list--item">
                                   <h4>Materials Needed</h4>
-                                  <div><textarea id="materialsNeeded" name="materialsNeeded" className placeholder="List materials..." defaultValue={""} value={materialsNeeded} onChange={this.change} onBlur={this.change}/></div>
+                                  <div><textarea id="materialsNeeded" name="materialsNeeded" placeholder="List materials..." defaultValue={materialsNeeded} onChange={this.change} onBlur={this.change}/></div>
                                 </li>
                               </ul>
                             </div>

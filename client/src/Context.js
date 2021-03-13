@@ -95,7 +95,7 @@ export class Provider extends Component {
           
           if (user !== null && typeof(user) !== 'undefined') {
             
-            AxiosOptions.auth.username = user.name;
+            AxiosOptions.auth.username = user.emailAddress;
             AxiosOptions.auth.password = user.password;
             AxiosOptions.method = 'get'
             AxiosOptions.url = '/users'

@@ -99,7 +99,7 @@ export default class CourseDetails extends Component {
   renderMaterialsList() {
     let list = [];
     this.state.course_materials.forEach((element, index) => {
-      list.push(<ReactMarkdown plugins={[gfm]} children={element} />)
+      list.push(<ReactMarkdown plugins={[gfm]} children={element} key={index} />)
     })
 
     return (
@@ -146,8 +146,8 @@ export default class CourseDetails extends Component {
     if(this.state.isAuthenticated && this.state.isAuthorized) {
       return (
         <>
-          <a className="button" onClick={this.handleUpdateCourseClick}>Update Course</a>
-          <a className="button" onClick={this.handleDeleteCourseClick}>Delete Course</a>
+          <a className="button" key="updateCourse" onClick={this.handleUpdateCourseClick}>Update Course</a>
+          <a className="button" key="deleteCourse" onClick={this.handleDeleteCourseClick}>Delete Course</a>
         </>
       )
     } else {

@@ -145,7 +145,7 @@ export default class UserSignIn extends Component {
     }
 
     if(errors.length === 0) {
-      context.actions.signIn({name: username, password: password}, this.finishSubmit, this.handleError);
+      context.actions.signIn({emailAddress: username, password: password}, this.finishSubmit, this.handleError);
     } else {
       this.setState(() => {
         return { errors: errors, username:'' , password: '', isAuthenticated: false};

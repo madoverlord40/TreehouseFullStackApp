@@ -131,13 +131,7 @@ export default class UserSignUp extends Component {
         emailAddress,
         password,
       };
-
-      const postOptions = {        
-          firstName: user.firstName,
-          lastName: user.lastName,
-          emailAddress: user.emailAddress,
-          password: user.password
-      }
+      
       context.actions.addNewUser(user, this.finishSubmit, this.handleError);
       
     }
