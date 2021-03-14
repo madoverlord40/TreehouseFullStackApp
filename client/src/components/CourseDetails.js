@@ -98,13 +98,16 @@ export default class CourseDetails extends Component {
   //Dynamic DOM for rendering the course details with markdown
   renderMaterialsList() {
     let list = [];
+
     this.state.course_materials.forEach((element, index) => {
-      list.push(<ReactMarkdown plugins={[gfm]} children={element} key={index} />)
+      list.push(
+        <li key={index}>
+          <ReactMarkdown plugins={[gfm]} children={element} />
+        </li>
+      )
     })
 
-    return (
-     list
-    )
+    return list;
   }
 
   //function to handle form submit, reset the state and move to the courses default route
@@ -178,9 +181,7 @@ export default class CourseDetails extends Component {
                     <p>By {this.state.ownerName}</p>
                   </div>
                   <div className="course--description">
-                    <ReactMarkdown plugins={[[gfm, {singleTilde: false}]]}>
-                      {this.state.course_description}
-                    </ReactMarkdown>
+                    <ReactMarkdown plugins={[gfm]} children={this.state.course_description} />            
                   </div>
                 </div>
                 <div className="grid-25 grid-right">

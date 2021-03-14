@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
-export default ({context}) => {
-  context.actions.signOut();
+export default class CreateCourse extends Component {
+  
+  componentWillMount() {
+    const { context } = this.props;
+    context.actions.signOut();
+  }
 
-  return (
-    <Redirect to="/" />
-  );
+  render () {
+    return (
+      <Redirect to="/" />
+    );
+  }
 }

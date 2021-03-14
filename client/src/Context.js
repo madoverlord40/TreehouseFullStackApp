@@ -266,7 +266,7 @@ export class Provider extends Component {
     //Function for signing out
     //simply updates the higher order context state, setting the auth user to null
     //and removes the cookie containing the auth information
-    signOut = () => {
+    signOut = async () => {
       this.setState({ authenticatedUser: null });
       cookies.remove('authenticatedUser');
       

@@ -64,6 +64,8 @@ function App() {
                 <Route exact path="/error" component={ErrorPage} />
                 {/* Page Not Found Route, shows when a route is not found */} 
                 <Route path="/notfound" component={NotFound} />
+                {/* Page Not Found default Route, shows when a route is not found when a route is manuall hit and does not exist*/} 
+                <Route component={NotFound} />
             </Switch>
         </Router>
     );
