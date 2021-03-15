@@ -8,7 +8,7 @@ export default class CourseDetails extends Component {
     userName: '',
     course_title: '',
     course_description: '',
-    course_materials: [],
+    course_materials: '',
     course_estimated_time: '',
     //is there a user authenticated?
     isAuthenticated: false,
@@ -67,23 +67,12 @@ export default class CourseDetails extends Component {
       const ownerName = response.user.firstName + '  ' + response.user.lastName;
 
       const details = response;
-      let materials = [];      
-
-      //we need to split the string up into an array so we can display the materials needed as a list isntead of a long string
-      if(details.materialsNeeded !== null ) {
-        materials = details.materialsNeeded.split('\n');
-        if(materials[materials.length -1] === '') {
-          materials.splice(materials.length - 1, 1);
-        }
-      } else {
-        materials.push('');
-      }
-
+     
       //populate the state so we can update the DOM
       this.setState({
         course_title: details.title,
         course_description: details.description,
-        course_materials: materials,
+        course_materials: details.materialsNeeded,
         course_time: details.estimatedTime,
         isAuthenticated: authenticated,
         isAuthorized: authorized,
@@ -95,21 +84,6 @@ export default class CourseDetails extends Component {
     }
   }
 
-  //Dynamic DOM for rendering the course details with markdown
-  renderMaterialsList() {
-    let list = [];
-
-    this.state.course_materials.forEach((element, index) => {
-      list.push(
-        <li key={index}>
-          <ReactMarkdown plugins={[gfm]} children={element} />
-        </li>
-      )
-    })
-
-    return list;
-  }
-
   //function to handle form submit, reset the state and move to the courses default route
   finishSubmit = () => {
           
@@ -118,7 +92,7 @@ export default class CourseDetails extends Component {
       return { 
           course_title: '',
           course_description: '',
-          course_materials: [],
+          course_materials: '',
           course_estimated_time: '',
           isAuthenticated: false,
           isAuthorized: false,
@@ -193,10 +167,11 @@ export default class CourseDetails extends Component {
                       </li>
                       <li className="course--stats--list--item">
                         <h4>Materials Needed</h4>
+                        <ReactMarkdown plugins={[gfm]} children={this.state.course_materials} />
                         <ul>
-                          {
-                            this.renderMaterialsList()
-                          }
+                          
+                            
+                          
                           
                         </ul>
                       </li>
