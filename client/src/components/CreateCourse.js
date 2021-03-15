@@ -13,8 +13,7 @@ export default class CreateCourse extends Component {
   }
 
   finishSubmit = () => {
-    const { from } = this.props.location.state || { from: { pathname: '/courses' } };
-          
+    
     this.setState(() => 
     {
       return { 
@@ -26,7 +25,7 @@ export default class CreateCourse extends Component {
           };
     });
 
-    this.props.history.push(from);
+    this.props.history.push('/courses');
 
   }
 
